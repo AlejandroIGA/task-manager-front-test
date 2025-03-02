@@ -1,0 +1,31 @@
+  /* Estilos para el botón flotante */
+  .floating-button {
+    position: fixed; /* Hace que el botón sea flotante */
+    bottom: 20px; /* Distancia desde la parte inferior */
+    right: 40px; /* Distancia desde la parte derecha */
+    z-index: 1000; /* Asegura que el botón esté por encima de otros elementos */
+  }
+
+  .kanban-board {
+    display: flex; /* Organiza las columnas en una fila */
+    gap: 16px; /* Espacio entre columnas */
+    padding: 16px; /* Espacio alrededor del tablero */
+    overflow-x: auto; /* Permite el desplazamiento horizontal si hay muchas columnas */
+    width: 100%; /* Ocupa todo el ancho disponible */
+  }
+  
+  .kanban-column {
+    flex: 1; /* Cada columna ocupa el mismo espacio */
+    min-width: 250px; /* Ancho mínimo de cada columna */
+    max-width: 100%; /* Evita que las columnas se expandan demasiado */
+    background-color: #f4f5f7; /* Color de fondo de la columna */
+    border-radius: 8px; /* Bordes redondeados */
+    padding: 16px; /* Espacio interno */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  }
+  
+  .kanban-column h3 {
+    margin-top: 0; /* Elimina el margen superior del título */
+    font-size: 18px; /* Tamaño del título */
+    color: #172b4d; /* Color del texto */
+  }

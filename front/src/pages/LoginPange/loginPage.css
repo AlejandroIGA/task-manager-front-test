@@ -1,0 +1,19 @@
+.login-page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    height: calc(100vh - 80px); 
+    background-color: #f0f0f0; 
+}
+
+.login-page-container form {
+    background-color: #394159; /* Color de fondo del formulario */
+    border: 2px solid #394159; /* Borde azul */
+    border-radius: 10px; /* Bordes redondeados */
+    padding: 20px; /* Espaciado interno */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    width: 300px; /* Ancho del formulario */
+    text-align: center; /* Centra el texto */
+    color: white;
+}
+

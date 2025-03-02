@@ -1,0 +1,56 @@
+div {
+    justify-content: center; /* Centra verticalmente */
+    margin: 0; /* Elimina el margen predeterminado */
+    text-align: center; /* Centra el texto */
+    color: black;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra los elementos del formulario horizontalmente */
+    gap: 10px; /* Espaciado entre elementos */
+}
+
+input {
+    padding: 8px;
+    width: 200px; /* Ancho de los inputs */
+    margin: 5px 0; /* Espaciado entre inputs */
+    border: 2px solid #ccc; /* Borde predeterminado */
+    border-radius: 4px; /* Bordes redondeados */
+    background-color: white;
+}
+
+input:invalid {
+    border-color: red; /* Borde rojo si el input es inválido */
+}
+
+input:valid {
+    border-color: blue; /* Borde azul si el input es válido */
+}
+
+label {
+    font-weight: bold; /* Texto en negrita */
+}
+
+button {
+    padding: 10px 20px;
+    margin-top: 10px; /* Espaciado superior */
+    color: white; /* Color del texto */
+    border: none; /* Sin borde */
+    border-radius: 4px; /* Bordes redondeados */
+    cursor: pointer;
+    background-color: #F2506E ;
+}
+
+button:disabled {
+    opacity: 0.5; /* Reduce la opacidad si el botón está deshabilitado */
+    cursor: not-allowed; /* Cambia el cursor */
+}
+
+
+span {
+    color: red; /* Color del texto de error */
+    font-size: 0.9em; /* Tamaño de fuente */
+}
+
