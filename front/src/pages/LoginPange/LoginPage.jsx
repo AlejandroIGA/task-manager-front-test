@@ -1,7 +1,7 @@
 import React from "react";
 import LoginForm from "../../components/loginForm";
 import Nav from "../../components/nav/nav";
-import './LoginPage.css';
+import './loginPage.css';
 
 const LoginPage = () =>{
     return(
