@@ -17,9 +17,11 @@ const TaskAssignPage = () => {
 
     let user = localStorage.getItem("user")
 
+    const API_URL = import.meta.env.VITE_API_URL;
+
     const fetchGroups = async () => { //alimentar dropdown
         try {
-            const response = await fetch(`http://localhost:3000/groups/${user}`);
+            const response = await fetch(`${API_URL}/groups/${user}`);
             const data = await response.json();
             setGroups(data.groups);
             setMessage(data.msg)
@@ -31,7 +33,7 @@ const TaskAssignPage = () => {
 
     const fetchTasks = async (group) => { 
         try {
-            const response = await fetch(`http://localhost:3000/tasks/group/${group}`);
+            const response = await fetch(`${API_URL}/tasks/group/${group}`);
             const data = await response.json();
             setTasks(data.tasks);
             setMessage(data.msg)
@@ -47,8 +49,8 @@ const TaskAssignPage = () => {
     }
 
     const handleSubmit = async (data) =>{
-        console.log("AQUI ESTA LA PETICION");
-        fetch(`http://127.0.0.1:3000/tasks/update/${data.id}`, {
+        //console.log("AQUI ESTA LA PETICION");
+        fetch(`${API_URL}/tasks/update/${data.id}`, {
             method: 'PUT',
             mode: "cors",
             headers: {
@@ -71,7 +73,7 @@ const TaskAssignPage = () => {
     }
 
     const handleDelete= async(id) => {
-        const response = await fetch(`http://127.0.0.1:3000/tasks/delete/${id}`, {
+        const response = await fetch(`${API_URL}/tasks/delete/${id}`, {
             method: "DELETE",
         });
 

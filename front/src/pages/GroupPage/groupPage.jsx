@@ -16,9 +16,11 @@ const GroupPage = () => {
 
     let user = localStorage.getItem("user")
 
+    const API_URL = import.meta.env.VITE_API_URL;
+
     const fetchGroups = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/groups/${user}`);
+            const response = await fetch(`${API_URL}/groups/${user}`);
             const data = await response.json();
             setGroups(data.groups);
             setMessage(data.msg)
@@ -40,7 +42,7 @@ const GroupPage = () => {
     const handleSubmit = async (data) => {
         if (groupToEdit == null) {
 
-            fetch("http://127.0.0.1:3000/groups", {
+            fetch(`${API_URL}/groups`, {
                 method: 'POST',
                 mode: "cors",
                 headers: {
@@ -55,7 +57,7 @@ const GroupPage = () => {
                 fetchGroups()
             )
         } else {
-            fetch(`http://127.0.0.1:3000/groups/update/${groupToEdit.id}`, {
+            fetch(`${API_URL}/groups/update/${groupToEdit.id}`, {
                 method: 'PUT',
                 mode: "cors",
                 headers: {
@@ -73,7 +75,7 @@ const GroupPage = () => {
     }
 
     const handleDelete = async (id) => {
-        const response = await fetch(`http://127.0.0.1:3000/groups/delete/${id}`, {
+        const response = await fetch(`${API_URL}/groups/delete/${id}`, {
             method: "DELETE",
         });
 

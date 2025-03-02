@@ -16,9 +16,11 @@ const UserPage = () => {
     const [userToEdit, setUserToEdit] = useState(null);
     const [message, setMessage] = useState('');
 
+    const API_URL = import.meta.env.VITE_API_URL;
+
     const fetchUsers = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/users/${actualUser}`);
+            const response = await fetch(`${API_URL}/users/${actualUser}`);
             const data = await response.json();
             setUsers(data.users);
             setMessage(data.msg)
@@ -40,7 +42,7 @@ const UserPage = () => {
     const handleSubmit = async (data) => {
         if (userToEdit == null) {
 
-            fetch("http://127.0.0.1:3000/register",{
+            fetch(`${API_URL}/register`,{
                 method: 'POST',
                 mode: "cors", 
                 headers:{
@@ -58,7 +60,7 @@ const UserPage = () => {
                 fetchUsers()
             );
         } else {
-            fetch(`http://127.0.0.1:3000/users/update/${userToEdit.id}`, {
+            fetch(`${API_URL}/users/update/${userToEdit.id}`, {
                 method: 'PUT',
                 mode: "cors",
                 headers: {
@@ -78,7 +80,7 @@ const UserPage = () => {
     }
 
     const handleDelete = async (id) => {
-        const response = await fetch(`http://127.0.0.1:3000/users/delete/${id}`, {
+        const response = await fetch(`${API_URL}/users/delete/${id}`, {
             method: "DELETE",
         });
 

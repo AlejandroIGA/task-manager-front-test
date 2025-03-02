@@ -15,6 +15,8 @@ function LoginForm() {
 
     const navigate = useNavigate();
 
+    const API_URL = import.meta.env.VITE_API_URL;
+
     function handleUserChange(e) {
         let val = e.target.value
         val = val.trim()
@@ -51,7 +53,7 @@ function LoginForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        fetch("http://127.0.0.1:3000/login",{
+        fetch(`${API_URL}/login`,{
                 method: 'GET',
                 mode: "cors", 
                 headers:{

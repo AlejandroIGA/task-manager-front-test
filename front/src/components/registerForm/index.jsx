@@ -15,6 +15,8 @@ function RegisterForm() {
     const [mensaje, setMensaje] = useState("");
     const [mostrar, setMostrar] = useState(false);
 
+    const API_URL = import.meta.env.VITE_API_URL;
+
     function handleUserChange(e) {
         let val = e.target.value
         val = val.trim()
@@ -61,7 +63,7 @@ function RegisterForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        fetch("http://127.0.0.1:3000/register",{
+        fetch(`${API_URL}/register`,{
                 method: 'POST',
                 mode: "cors", 
                 headers:{

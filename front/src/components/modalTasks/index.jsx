@@ -17,12 +17,13 @@ const ModalTasks = ({ isModalOpen, setIsModalOpen, onSubmit, taskToEdit, setTask
     const [users, setUsers] = useState([]);
     const [groups, setGroups] = useState([]);
 
-    const [user, setUser] = useState(localStorage.getItem("user")
-    )
+    const [user, setUser] = useState(localStorage.getItem("user"))
+
+    const API_URL = import.meta.env.VITE_API_URL;
 
     const fetchUsers = async (group) => {
         try {
-            const response = await fetch(`http://localhost:3000/members/${group}`);
+            const response = await fetch(`${API_URL}/members/${group}`);
             const data = await response.json();
             setUsers(data.users);
         } catch (error) {
@@ -32,7 +33,7 @@ const ModalTasks = ({ isModalOpen, setIsModalOpen, onSubmit, taskToEdit, setTask
 
     const fetchGroups = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/groups/${user}`);
+            const response = await fetch(`${API_URL}/groups/${user}`);
             const data = await response.json();
             setGroups(data.groups);
         } catch (error) {

@@ -11,9 +11,12 @@ const DashboardPage = () => {
 
     let user = localStorage.getItem("user")
 
+    const API_URL = import.meta.env.VITE_API_URL;
+
+
     const fetchTasks = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/tasks/all/${user}`);
+            const response = await fetch(`${API_URL}/tasks/all/${user}`);
             const data = await response.json();
             groupTasksByStatus(data.tasks); // Agrupar tareas por status
         } catch (error) {

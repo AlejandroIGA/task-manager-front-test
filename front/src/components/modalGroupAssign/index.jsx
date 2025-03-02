@@ -8,6 +8,8 @@ const ModalGroupAssign = ({ isModalOpen, setIsModalOpen, onSubmit, groupToEdit, 
     const [users, setUsers] = useState([]); //todos los usuarios que no pertenezcan al grupo
     const [assignedUser, setAssignedUser] = useState('');
 
+    const API_URL = import.meta.env.VITE_API_URL;
+
     function hangdleAssignedUser(e){
         setAssignedUser(e.target.value);
     }
@@ -15,7 +17,7 @@ const ModalGroupAssign = ({ isModalOpen, setIsModalOpen, onSubmit, groupToEdit, 
 
     const fetchNoMembers = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/nomembers/${group}`);
+            const response = await fetch(`${API_URL}/nomembers/${group}`);
             const data = await response.json();
             setUsers(data.users);
         } catch (error) {

@@ -6,6 +6,8 @@ const TaskGroup = ({ status, tasks, onEdit }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState(null);
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const handleEditTask = (task) => {
     setTaskToEdit(task);
     setIsModalOpen(true);
@@ -16,7 +18,7 @@ const TaskGroup = ({ status, tasks, onEdit }) => {
   }
 
   const handleSubmit = async (data) => {
-    fetch(`http://127.0.0.1:3000/tasks/update/${taskToEdit.id}`, {
+    fetch(`${API_URL}/tasks/update/${taskToEdit.id}`, {
       method: 'PUT',
       mode: "cors",
       headers: {

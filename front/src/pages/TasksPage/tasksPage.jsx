@@ -18,6 +18,8 @@ const TasksPage = () => {
 
     let user = localStorage.getItem("user")
 
+    const API_URL = import.meta.env.VITE_API_URL;
+
     const openNotificationWithIcon = (type, msg) => {
         api[type]({
           message: ".",
@@ -27,7 +29,7 @@ const TasksPage = () => {
 
     const fetchTasks = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/tasks/${user}`);
+            const response = await fetch(`${API_URL}/tasks/${user}`);
 
             const data = await response.json();
             setTasks(data.tasks); 
@@ -53,10 +55,10 @@ const TasksPage = () => {
         try {
             let url, method;
             if (taskToEdit == null) {
-                url = "http://127.0.0.1:3000/tasks";
+                url = `${API_URL}/tasks`;
                 method = 'POST';
             } else {
-                url = `http://127.0.0.1:3000/tasks/update/${taskToEdit.id}`;
+                url = `${API_URL}/tasks/update/${taskToEdit.id}`;
                 method = 'PUT';
             }
     
@@ -91,7 +93,7 @@ const TasksPage = () => {
     };
 
     const handleDelete= async(id) => {
-        const response = await fetch(`http://127.0.0.1:3000/tasks/delete/${id}`, {
+        const response = await fetch(`${API_URL}/tasks/delete/${id}`, {
             method: "DELETE",
         });
 

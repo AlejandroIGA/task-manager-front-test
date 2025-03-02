@@ -16,12 +16,13 @@ const GroupAssignPage = () => {
     const [message, setMessage] = useState(''); 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    const API_URL = import.meta.env.VITE_API_URL;
 
     let user = localStorage.getItem("user")
 
     const fetchGroups = async () => { //alimentar dropdown
         try {
-            const response = await fetch(`http://localhost:3000/groups/${user}`);
+            const response = await fetch(`${API_URL}/groups/${user}`);
             const data = await response.json();
             setGroups(data.groups);
             setMessage(data.msg)
@@ -33,7 +34,7 @@ const GroupAssignPage = () => {
 
     const fetchMembers = async (group) => { 
         try {
-            const response = await fetch(`http://localhost:3000/members/${group}`);
+            const response = await fetch(`${API_URL}/members/${group}`);
             const data = await response.json();
             setMembers(data.users);
             setMessage(data.msg)
@@ -49,7 +50,7 @@ const GroupAssignPage = () => {
     }
 
     const handleSubmit = async (data) =>{
-        fetch("http://127.0.0.1:3000/members", {
+        fetch(`${API_URL}/members`, {
             method: 'PUT',
             mode: "cors",
             headers: {
@@ -65,7 +66,7 @@ const GroupAssignPage = () => {
     }
 
     const handleDelete= async(user,group) => {
-        fetch("http://127.0.0.1:3000/members", {
+        fetch(`${API_URL}/members`, {
             method: 'DELETE',
             mode: "cors",
             headers: {
