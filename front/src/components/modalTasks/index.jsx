@@ -1,18 +1,12 @@
 import React from "react";
 import { useState, useEffect } from 'react'
-import { Button, Modal } from 'antd';
+import { Button, Modal, Form, Input, DatePicker, Select, message } from 'antd';
+import moment from 'moment';
 import './style.css'
 
 const ModalTasks = ({ isModalOpen, setIsModalOpen, onSubmit, taskToEdit, setTaskToEdit, view }) => {
 
-    const [name, setName] = useState('');
-    const [description, setDescription] = useState('');
-    const [date, setDate] = useState('');
-    const [status, setStatus] = useState('En progreso');
-    const [category, setCategory] = useState('Baja');
-    const [group, setGroup] = useState('Sin grupo');
-    const [assignedUser, setAssignedUser] = useState('Sin asignar');
-    const [id, setId] = useState('');
+    const [form] = Form.useForm();
 
     const [users, setUsers] = useState([]);
     const [groups, setGroups] = useState([]);
@@ -25,7 +19,7 @@ const ModalTasks = ({ isModalOpen, setIsModalOpen, onSubmit, taskToEdit, setTask
         try {
             const response = await fetch(`${API_URL}/members/${group}`);
             const data = await response.json();
-            setUsers(data.users);
+            setUsers(data.users)
         } catch (error) {
             console.error("Error:", error);
         }
@@ -35,82 +29,66 @@ const ModalTasks = ({ isModalOpen, setIsModalOpen, onSubmit, taskToEdit, setTask
         try {
             const response = await fetch(`${API_URL}/groups/${user}`);
             const data = await response.json();
-            setGroups(data.groups);
+            setGroups(data.groups)
         } catch (error) {
             console.error("Error:", error);
         }
     };
 
 
-    const handleOk = () => {
+    const handleOk = (values) => {
         setIsModalOpen(false);
         setTaskToEdit(null);
-        onSubmit({ name, description, date, status, category, group, assignedUser, user, id });
+        console.log(form.getFieldValue("assignedUser"))
+        onSubmit(values);
+        form.resetFields();
+        form.setFieldsValue(
+            {
+                status: "En progreso",
+                category: "Baja",
+                group: "Sin grupo",
+                assignedUser: "Sin asignar"
+            })
     };
 
     const handleCancel = () => {
         setIsModalOpen(false);
         setTaskToEdit(null);
-
-        setName('');
-        setDescription('');
-        setDate('');
-        setStatus('En progreso');
-        setCategory('');
-        setGroup('Sin grupo');
-        setAssignedUser('Sin asignar')
-
+        form.resetFields();
+        form.setFieldsValue(
+            {
+                status: "En progreso",
+                category: "Baja",
+                group: "Sin grupo",
+                assignedUser: "Sin asignar"
+            })
     };
-
-    function handleName(e) {
-        setName(e.target.value);
-    }
-
-    function handleDescription(e) {
-        setDescription(e.target.value)
-    }
-
-    function handleDate(e) {
-        setDate(e.target.value)
-    }
-
-    function handleStatus(e) {
-        setStatus(e.target.value)
-    }
-
-    function handleCategory(e) {
-        setCategory(e.target.value)
-    }
-
-    function handleGroup(e) {
-        setGroup(e.target.value)
-    }
-
-    function hangdleAssignedUser(e) {
-        setAssignedUser(e.target.value)
-    }
 
     useEffect(() => {
         if (taskToEdit) {
-            setName(taskToEdit.name || '');
-            setDescription(taskToEdit.description || '');
-            setId(taskToEdit.id || '');
-            setAssignedUser(taskToEdit.assignedUser || '');
-            setStatus(taskToEdit.status || 'En progreso');
-            setCategory(taskToEdit.category || '');
-            setGroup(taskToEdit.group || '');
-            setUser(taskToEdit.user || '');
-            if (taskToEdit.date) {
-                const formattedDate = new Date(taskToEdit.date._seconds * 1000).toISOString().split("T")[0];
-                setDate(formattedDate);
-            } else {
-                setDate('');
-            }
-
+            const formattedDate = moment(taskToEdit.date._seconds * 1000); 
+            form.setFieldsValue({
+                name: taskToEdit.name,
+                description: taskToEdit.description,
+                id: taskToEdit.id,
+                date: formattedDate,
+                assignedUser: taskToEdit.assignedUser,
+                status: taskToEdit.status,
+                category: taskToEdit.category,
+                group: taskToEdit.group,
+                user: taskToEdit.user
+            })
+            console.log(form.getFieldValue("group"))
             fetchUsers(taskToEdit.group);
             fetchGroups();
         } else {
-            fetchUsers(group);
+            form.setFieldsValue(
+                {
+                    status: "En progreso",
+                    category: "Baja",
+                    group: "Sin grupo",
+                    assignedUser: "Sin asignar"
+                })
             fetchGroups();
         }
     }, [taskToEdit]);
@@ -119,87 +97,139 @@ const ModalTasks = ({ isModalOpen, setIsModalOpen, onSubmit, taskToEdit, setTask
         <>
             <Modal title={taskToEdit != null ? "Editar una tarea" : "Agregar una tarea"} open={isModalOpen} onOk={handleOk} onCancel={handleCancel}
                 footer={[
-                    <Button key="cancel" onClick={handleCancel}>Cancelar</Button>,
-                    <Button key="submit" onClick={handleOk}>
-                        {taskToEdit ? "Actualizar" : "Crear"}
-                    </Button>,
+
                 ]}
             >
-                <form>
-                    <label>Nombre de la tarea</label>
-                    <input type="text" onChange={handleName} value={name} required minLength={3} maxLength={30} disabled={view == "tablero" ? true : false}></input>
-                    <label>Descripción</label>
-                    <input type='text' onChange={handleDescription} value={description} required disabled={view == "tablero" ? true : false}></input>
-                    <label>Fecha limite</label>
-                    <input type='date' onChange={handleDate} value={date} required disabled={view == "tablero" ? true : false}></input>
-                    <label>Estatus</label>
-                    <select
-                        value={status}
-                        onChange={handleStatus}
-                        required
-                        disabled={assignedUser != localStorage.getItem('user') && view == "asignación" ? true : false}
+                <Form onFinish={handleOk} form={form}>
+                    <Form.Item name = "id" hidden="true"></Form.Item>
+                    <Form.Item
+                        label="Nombre de la tarea"
+                        name="name"
+                        rules={[
+                            { required: true, message: "Ingresa un nombre" },
+                            { min: 3, message: "Longitud minima de 3 caracteres" },
+                            { max: 20, message: "Longitud máxima de 20 caracteres" }
+                        ]}
                     >
-                        <option value="En progreso">En progreso</option>
-                        <option value="Terminada">Terminada</option>
-                        <option value="En pausa">En pausa</option>
-                        <option value="En revisión">En revisión</option>
-                    </select>
-                    <label>Categoría</label>
-                    <select
-                        value={category}
-                        onChange={handleCategory}
-                        required
-                        disabled={view == "tablero" ? true : false}
+                        <Input disabled={view == "tablero" ? true : false} />
+                    </Form.Item>
+                    <Form.Item
+                        label="Descripción"
+                        name="description"
+                        rules={[
+                            { required: true, message: "Ingrese una descripción" },
+                            { min: 3, message: "Longitud minima de 3 caracteres" },
+                            { max: 100, message: "Longitud máxima de 100 caracteres" }
+                        ]}
                     >
-                        <option value="Baja">Baja</option>
-                        <option value="Media">Media</option>
-                        <option value="Alta">Alta</option>
-                    </select>
+                        <Input disabled={view == "tablero" ? true : false} />
+                    </Form.Item>
+                    <Form.Item
+                        label="Fecha limite"
+                        name="date"
+                        rule={[
+                            { required: true, message: "Ingrese una fecha limite" }
+                        ]}
+                    >
+                        <DatePicker disabled={view == "tablero" ? true : false} placeholder="" />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Estatus"
+                        name="status"
+                    >
+                        <Select disabled={form.getFieldValue("assignedUser") != localStorage.getItem('user') && view == "asignación" ? true : false}>
+                            <Select.Option value="En progreso">En progreso</Select.Option>
+                            <Select.Option value="Terminada">Terminada</Select.Option>
+                            <Select.Option value="En pausa">En pausa</Select.Option>
+                            <Select.Option value="En revisión">En revisión</Select.Option>
+                        </Select>
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Categoría"
+                        name="category"
+                    >
+                        <Select disabled={view == "tablero" ? true : false}>
+                            <Select.Option value="Baja"></Select.Option>
+                            <Select.Option value="Media"></Select.Option>
+                            <Select.Option value="Alta"></Select.Option>
+                        </Select>
+                    </Form.Item>
+
                     {
-                        view == "asignación" ?
-                            <></>
+                        view == "asignación"?
+                            <>
+                            <Form.Item
+                                name = "group"
+                                hidden = "true"
+                            >
+                                <Select>
+                                    <Select.Option key={999} value={form.getFieldValue("group")}>{form.getFieldValue("group")}</Select.Option>
+                                </Select>
+                            </Form.Item>
+                            
+                            </>
                             :
                             <>
-                                <label>Grupo</label>
-                                <select
-                                    value={group}
-                                    onChange={handleGroup}
-                                    disabled={view == "tablero" ? true : false}
+                                <Form.Item
+                                    label="Grupo"
+                                    name="group"
                                 >
-                                    <option value="Sin grupo">Sin grupo</option>
-                                    {
-                                        view == "tablero" ?
-                                            <option key={group.id} value={group}>{group}</option>
-                                            :
-                                            groups.map((group) => (
-                                                <option key={group.id} value={group.name}>{group.name}</option>
-                                            ))
-                                    }
-                                </select>
+                                    <Select
+                                        disabled = {view == "tablero" ? true : false}
+                                    >
+                                        <Select.Option value="Sin grupo">Sin grupo</Select.Option>
+                                        {
+                                            view == "tablero" ?
+                                                <Select.Option value={form.getFieldValue("group")}>{form.getFieldValue("group")}</Select.Option>
+                                                :
+                                                groups.map((group) => (
+                                                    <Select.Option key={group.id} value={group.name}>{group.name}</Select.Option>
+                                                ))
+                                        }
+                                    </Select>
+                                </Form.Item>
                             </>
                     }
                     {
                         view == "Tareas" ?
-                            <></>
+                            <>
+                            <Form.Item
+                                label = "Usario"
+                                name = "assignedUser"
+                                hidden = "true"
+                            >
+                                <Select>
+                                    <Select.Option value="Sin asignar">Sin asignar</Select.Option>
+                                </Select>
+                            </Form.Item>
+                            </>
                             :
                             <>
-                                <label>Usuario</label>
-                                <select
-                                    value={assignedUser}
-                                    onChange={hangdleAssignedUser}
-                                    disabled={view == "tablero" ? true : false}
+                                <Form.Item
+                                    label="Usuario"
+                                    name="assignedUser"
                                 >
-                                    <option value="Sin asignar">Sin asignar</option>
-                                    {
-                                        users.map((user) => (
-                                            <option key={user.id} value={user.user}>{user.user}</option>
-                                        ))
-                                    }
-                                </select>
+                                    <Select
+                                        disabled = {view == "tablero" ? true : false}
+                                    >
+                                        <Select.Option value="Sin asignar">Sin asignar</Select.Option>
+                                        {
+                                            users.map((user) => (
+                                                <Select.Option key={user.id} value={user.user}>{user.user}</Select.Option>
+                                            ))
+                                        }
+                                    </Select>
+                                </Form.Item>
                             </>
                     }
-                    <input type='text' value={user} hidden></input>
-                </form>
+                    <Form.Item label={null}>
+                        <Button htmlType="submit">
+                            {taskToEdit ? "Actualizar" : "Crear"}
+                        </Button>
+                    </Form.Item>
+                </Form>
             </Modal>
         </>
     );

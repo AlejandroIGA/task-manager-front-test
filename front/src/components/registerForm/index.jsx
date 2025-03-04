@@ -1,81 +1,32 @@
 import React from "react";
 import { useState } from 'react'
-import './style.css'
+import { Button, Form, Input } from 'antd';
+//import './style.css'
 
 function RegisterForm() {
 
-    const [user, setUser] = useState("");
-    const [psw, setPsw] = useState("");
-    const [email, setEmail] = useState("");
-
-
-    const [error, setError] = useState("");
-    const [errorNombre, setErrorNombre] = useState("");
+    const [form] = Form.useForm();
 
     const [mensaje, setMensaje] = useState("");
     const [mostrar, setMostrar] = useState(false);
 
     const API_URL = import.meta.env.VITE_API_URL;
 
-    function handleUserChange(e) {
-        let val = e.target.value
-        val = val.trim()
-        if (val != null) {
-            setUser(val)
-        }
-    }
+    const handleSubmit = async (values) => {
 
-    function handleEmailChange(e){
-        let val = e.target.value
-        val = val.trim();
-        if (val != null) {
-            setEmail(val)
-        }
-    }
-
-
-    function handlePswChange(e) {
-        let val = e.target.value
-        val = val.trim();
-        const hasLetters = /[a-zA-Z]/.test(val);
-        const hasNumbers = /\d/.test(val);
-
-        if (val != null) {
-            setPsw(val)
-            if (!hasLetters) {
-                setError("Debe contener por lo menos una letra")
-            }
-
-            else if (!hasNumbers) {
-                setError("Debe contener por lo menos un número")
-            }
-
-            else if (val.length < 10 || val.length >14 ) {
-                setError("Debe tener de 10 a 14 caracteres")
-            }
-
-            else {
-                setError(" ")
-            }
-        }
-    }
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        fetch(`${API_URL}/register`,{
-                method: 'POST',
-                mode: "cors", 
-                headers:{
-                    'Content-Type' : 'application/x-www-form-urlencoded'
-                },
-                body: new URLSearchParams({
-                    user: user.trim(),
-                    psw: psw,
-                    email: email,
-                    rol: "worker"
-                })
-            }).then(response => response.json())
+        fetch(`${API_URL}/register`, {
+            method: 'POST',
+            mode: "cors",
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                user: values.user,
+                psw: values.psw,
+                email: values.email,
+                rol: "Trabajador"
+            })
+        }).then(response => response.json())
             .then(data => {
                 setMensaje(data.msg);
                 setMostrar(true);
@@ -84,23 +35,55 @@ function RegisterForm() {
 
     return (
         <div>
-        <h2 style={{color:"black"}}>Registrarse</h2>
-        <form onSubmit={handleSubmit}>
-            {
-                mostrar == true ? <p>{mensaje}</p> : <></>
-            }
-            <label>Usuario: </label>
-            <input type="text"  onChange={handleUserChange} value={user} minLength={10} maxLength={14} required></input>
+            <h2 style={{ color: "black" }}>Registrarse</h2>
+            <Form onFinish={handleSubmit} form={form}>
+                {
+                    mostrar == true ? <p>{mensaje}</p> : <></>
+                }
+                <Form.Item
+                    label="Usuario"
+                    name="user"
+                    rules={[
+                        { required: true, message: 'Ingrese un nombre de usuario' },
+                        { min: 10, message: "Debe tener una longitud minima de 10 caracteres" },
+                        { max: 14, message: "Debe tener una longitud máxima de 14 caracteres" }
+                    ]}
+                >
+                    <Input />
+                </Form.Item>
+                <Form.Item
+                    label="Contraseña"
+                    name="psw"
+                    rules={[
+                        { required: true, message: 'Ingrese su contraseña' },
+                        { min: 10, message: "Debe tener una longitud minima de 10 caracteres" },
+                        { max: 14, message: "Debe tener una longitud máxima de 14 caracteres" },
+                        {
+                            pattern: /^(?=.*[A-Za-z])(?=.*\d).+$/,
+                            message: 'La contraseña debe contener al menos una letra y un número',
+                        },
+                    ]}
+                >
+                    <Input.Password />
+                </Form.Item>
 
-            <label>Contraseña: <span>{error}</span></label>
-            <input type="text"  onChange={handlePswChange} value={psw} minLength={10} maxLength={14} required 
-            style={{ borderColor: error == " " ? "blue" : "red" }}
-            ></input>
+                <Form.Item
+                    label="Correo"
+                    name="email"
+                    rules={[
+                        { type: 'email', message: "Ingrese un correo válido" },
+                        { required: true, message: "Ingrese su correo" }
+                    ]}
+                >
+                    <Input/>
+                </Form.Item>
 
-            <label>Correo: </label>
-            <input type="email"  onChange={handleEmailChange} value={email} minLength={10} maxLength={80}  required></input>
-            <button type="submit" disabled={error == " " || errorNombre == " "? false : true} >Enviar</button>
-        </form>
+                <Form.Item label={null}>
+                    <Button htmlType="submit">
+                        Registrarse
+                    </Button>
+                </Form.Item>            
+            </Form>
         </div>
     );
 

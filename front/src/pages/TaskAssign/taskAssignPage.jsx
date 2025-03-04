@@ -57,7 +57,7 @@ const TaskAssignPage = () => {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
             body: new URLSearchParams({
-                user: data.user,
+                user: localStorage.getItem("user"),
                 name: data.name,
                 description: data.description,
                 category: data.category,

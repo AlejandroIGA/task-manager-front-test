@@ -61,7 +61,7 @@ const TasksPage = () => {
                 url = `${API_URL}/tasks/update/${taskToEdit.id}`;
                 method = 'PUT';
             }
-    
+            console.log(data)
             const response = await fetch(url, {
                 method: method,
                 mode: "cors",
@@ -69,7 +69,7 @@ const TasksPage = () => {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
                 body: new URLSearchParams({
-                    user: data.user,
+                    user: localStorage.getItem("user"),
                     name: data.name,
                     description: data.description,
                     category: data.category,

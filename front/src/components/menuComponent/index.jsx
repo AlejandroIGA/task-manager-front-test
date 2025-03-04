@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu } from 'antd';
+import { Button, Menu } from 'antd';
 import './style.css'
 
 const MenuComponent = () => {
@@ -70,7 +70,7 @@ const MenuComponent = () => {
         </Menu.Item>
       ))}
     </Menu>
-    <button onClick={logout} className='floatting'>Cerrar sesión</button>
+    <Button onClick={logout} className='floatting'>Cerrar sesión</Button>
     </>
     
   );
