@@ -8,9 +8,11 @@ const ModalUser = ({ isModalOpen, setIsModalOpen, onSubmit, userToEdit, setUserT
     const [user, setUser] = useState("");
     const [psw, setPsw] = useState("");
     const [email, setEmail] = useState("");
-    const [rol, setRol] = useState("");
+    const [rol, setRol] = useState("Administrador");
 
     const [error, setError] = useState(""); 
+    const [errorUser, setErrorUser] = useState("");
+    const [errorEmail, setErrorEmail] = useState("");
 
 
     useEffect(() => {
@@ -23,6 +25,10 @@ const ModalUser = ({ isModalOpen, setIsModalOpen, onSubmit, userToEdit, setUserT
 
 
     const handleOk = () => {
+        if(error!=" " || errorEmail!="" || errorUser!=""){
+            console.log()
+            return false;
+        }
         setIsModalOpen(false);
         setUserToEdit(null);
         onSubmit({ user, psw, email, rol });
@@ -44,6 +50,11 @@ const ModalUser = ({ isModalOpen, setIsModalOpen, onSubmit, userToEdit, setUserT
         if (val != null) {
             setUser(val)
         }
+        if(val.length == 0){
+            setErrorUser("Ingrese un nombre");
+        }else{
+            setErrorUser("");
+        }
     }
 
     function handleEmailChange(e){
@@ -51,6 +62,11 @@ const ModalUser = ({ isModalOpen, setIsModalOpen, onSubmit, userToEdit, setUserT
         val = val.trim();
         if (val != null) {
             setEmail(val)
+        }
+        if(val.length == 0){
+            setErrorEmail("Ingrese un correo")
+        }else{
+            setErrorEmail("");
         }
     }
 
@@ -98,13 +114,12 @@ const ModalUser = ({ isModalOpen, setIsModalOpen, onSubmit, userToEdit, setUserT
             <Modal title={userToEdit != null ? "Editar un usuario" : "Agregar un usuario"} open={isModalOpen} onOk={handleOk} onCancel={handleCancel}
                 footer={[
                     <Button key="cancel" onClick={handleCancel}>Cancelar</Button>,
-                    <Button key="submit" onClick={handleOk}  disabled={userToEdit ? false : error !== " "}>
-                        {userToEdit ? "Actualizar" : "Crear"}
-                    </Button>,
+                    
                 ]}
             >
                 <form>
                     <label>Usuario: </label>
+                    <p style={{color:"red"}}>{errorUser}</p>
                     <input type="text" onChange={handleUserChange} value={user} minLength={10} maxLength={14} required></input>
 
                     <label hidden={userToEdit ? true : false}>Contraseña: <span>{error}</span></label>
@@ -114,6 +129,7 @@ const ModalUser = ({ isModalOpen, setIsModalOpen, onSubmit, userToEdit, setUserT
                     ></input>
 
                     <label>Correo: </label>
+                    <p style={{color:"red"}}>{errorEmail}</p>
                     <input type="email" onChange={handleEmailChange} value={email} minLength={10} maxLength={80} required></input>
 
                     <label>Rol</label>
@@ -124,6 +140,9 @@ const ModalUser = ({ isModalOpen, setIsModalOpen, onSubmit, userToEdit, setUserT
                         <option value="Administrador">Administrador</option>
                         <option value="Trabajador">Trabajador</option>
                     </select>
+                    <Button key="submit" onClick={handleOk}  disabled={userToEdit ? false : error !== " "}>
+                        {userToEdit ? "Actualizar" : "Crear"}
+                    </Button>
                 </form>
             </Modal>
         </>

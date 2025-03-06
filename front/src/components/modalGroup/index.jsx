@@ -8,6 +8,7 @@ const ModalGroup = ({ isModalOpen, setIsModalOpen, onSubmit, groupToEdit, setGro
     let createdBy = user;
 
     const [name, setName] = useState('');
+    const [msg, setMsg] = useState("");
 
 
     useEffect(() => {
@@ -18,10 +19,14 @@ const ModalGroup = ({ isModalOpen, setIsModalOpen, onSubmit, groupToEdit, setGro
 
 
     const handleOk = () => {
+        if(name.trim() == ""){
+            setMsg("Debe de ingresar un nombre");
+            return false;
+        }
+        onSubmit({ name, createdBy });
         setIsModalOpen(false);
         setGroupToEdit(null);
         setName('');
-        onSubmit({ name, createdBy });
     };
 
     const handleCancel = () => {
@@ -32,6 +37,7 @@ const ModalGroup = ({ isModalOpen, setIsModalOpen, onSubmit, groupToEdit, setGro
 
     function handleName(e) {
         setName(e.target.value);
+        setMsg("");
     }
 
     return (
@@ -41,15 +47,16 @@ const ModalGroup = ({ isModalOpen, setIsModalOpen, onSubmit, groupToEdit, setGro
             <Modal title={groupToEdit != null ? "Editar un grupo" : "Agregar un grupo"} open={isModalOpen} onOk={handleOk} onCancel={handleCancel}
                 footer={[
                     <Button key="cancel" onClick={handleCancel}>Cancelar</Button>,
-                    <Button key="submit" onClick={handleOk}>
-                        {groupToEdit ? "Actualizar" : "Crear"}
-                    </Button>,
                 ]}
             >
                 <form>
                     <label>Nombre del grupo</label>
+                    <p>{msg}</p>
                     <input type="text" onChange={handleName} value={name} required minLength={3} maxLength={20}></input>
                 </form>
+                <Button key="submit" onClick={handleOk}>
+                        {groupToEdit ? "Actualizar" : "Crear"}
+                </Button>
             </Modal>
         </>
     );

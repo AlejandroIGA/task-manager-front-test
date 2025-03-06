@@ -7,11 +7,13 @@ const ModalGroupAssign = ({ isModalOpen, setIsModalOpen, onSubmit, groupToEdit, 
 
     const [users, setUsers] = useState([]); //todos los usuarios que no pertenezcan al grupo
     const [assignedUser, setAssignedUser] = useState('');
+    const [msg, setMsg] = useState("");
 
     const API_URL = import.meta.env.VITE_API_URL;
 
     function hangdleAssignedUser(e){
         setAssignedUser(e.target.value);
+        setMsg("");
     }
 
 
@@ -33,9 +35,14 @@ const ModalGroupAssign = ({ isModalOpen, setIsModalOpen, onSubmit, groupToEdit, 
 
 
     const handleOk = () => {
+        if(assignedUser == ""){
+            setMsg("Debe seleccionar un usuario");
+            return false;
+        }
+        onSubmit({ assignedUser });
         setIsModalOpen(false);
         setAssignedUser('');
-        onSubmit({ assignedUser });
+        setMsg("")
     };
 
     const handleCancel = () => {
@@ -52,16 +59,15 @@ const ModalGroupAssign = ({ isModalOpen, setIsModalOpen, onSubmit, groupToEdit, 
             <Modal title="Agregar un usuario" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}
                 footer={[
                     <Button key="cancel" onClick={handleCancel}>Cancelar</Button>,
-                    <Button key="submit" onClick={handleOk}>
-                        Agregar
-                    </Button>,
                 ]}
             >
                 <form>
                     <label>Usuario</label>
+                    <p>{msg}</p>
                     <select
                         value={assignedUser}
                         onChange={hangdleAssignedUser}
+                        required
                     >
                         <option value="">Seleccione un usuario</option>
                         {
@@ -70,6 +76,9 @@ const ModalGroupAssign = ({ isModalOpen, setIsModalOpen, onSubmit, groupToEdit, 
                             ))
                         }
                     </select>
+                    <Button key="submit" onClick={handleOk} disabled={msg != "" ? true : false}>
+                        Agregar
+                    </Button>
                 </form>
             </Modal>
         </>
