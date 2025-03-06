@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "routes": {
-    "/*": "/index.html"
+    "/*": "/front/index.html"
   },
   "dependencies": {
     "@ant-design/icons": "^5.6.1",
