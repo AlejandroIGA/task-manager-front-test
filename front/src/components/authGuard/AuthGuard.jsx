@@ -7,7 +7,7 @@ const AuthGuard = ({ children }) => {
     useEffect(() => {
         const user = localStorage.getItem('user'); 
         if (!user) {
-            navigate('/ingresar', { replace: true });
+            navigate('/ingresar', );
         }
     }, [navigate]);
 
